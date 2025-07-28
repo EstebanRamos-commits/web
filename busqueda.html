@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabores de mi tierra - Buscar</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <!-- Menú superior -->
+    <header class="header">
+        <nav class="nav">
+            <ul class="nav-list">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="menu.html">Menú</a></li>
+                <li><a href="acerca.html">Acerca de</a></li>
+                <li><a href="redes.html">Redes</a></li>
+                <li><a href="servicios.html">Servicios</a></li>
+                <li><a href="busqueda.html">Buscar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido de búsqueda -->
+    <main class="main-busqueda">
+        <h1>Buscar en Sabores de mi tierra</h1>
+        
+        <form id="form-busqueda" class="barra-busqueda">
+            <input type="text" id="input-busqueda" placeholder="Escribe lo que buscas..." required>
+            <button type="submit">
+                <img src="imagenes/lu.png" alt="Buscar" width="20">
+            </button>
+        </form>
+
+        <div id="resultados">
+            <p id="mensaje-resultados"></p>
+            <div id="lista-resultados" class="resultados-container"></div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; Esteban Ramos 2025. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Base de datos de búsqueda (puedes ampliarla)
+        const database = [
+            { titulo: "Huevos rancheros", pagina: "menu.html#desayunos", categoria: "Desayunos" },
+            { titulo: "Tamales", pagina: "menu.html#desayunos", categoria: "Desayunos" },
+            { titulo: "Mole con pollo", pagina: "menu.html#almuerzos", categoria: "Almuerzos" },
+            { titulo: "Pozole", pagina: "menu.html#almuerzos", categoria: "Almuerzos" },
+            { titulo: "Quesadillas", pagina: "menu.html#cenas", categoria: "Cenas" },
+            { titulo: "Atole", pagina: "menu.html#postres", categoria: "Postres" },
+            { titulo: "Ubicación", pagina: "servicios.html#ubicacion", categoria: "Servicios" },
+            { titulo: "Horarios", pagina: "servicios.html#horarios", categoria: "Servicios" },
+            { titulo: "Misión", pagina: "acerca.html#mision", categoria: "Acerca de" },
+            { titulo: "Valores", pagina: "acerca.html#valores", categoria: "Acerca de" }
+        ];
+
+        // Configurar el formulario
+        document.getElementById('form-busqueda').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const termino = document.getElementById('input-busqueda').value.toLowerCase();
+            buscar(termino);
+        });
+
+        // Función de búsqueda
+        function buscar(termino) {
+            const resultados = database.filter(item => 
+                item.titulo.toLowerCase().includes(termino) || 
+                item.categoria.toLowerCase().includes(termino)
+            );
+
+            mostrarResultados(resultados, termino);
+        }
+
+        // Mostrar resultados
+        function mostrarResultados(resultados, termino) {
+            const contenedor = document.getElementById('lista-resultados');
+            const mensaje = document.getElementById('mensaje-resultados');
+            
+            contenedor.innerHTML = '';
+            
+            if (resultados.length === 0) {
+                mensaje.textContent = `No se encontraron resultados para "${termino}"`;
+                return;
+            }
+            
+            mensaje.textContent = `Resultados para "${termino}":`;
+            
+            resultados.forEach(item => {
+                const elemento = document.createElement('div');
+                elemento.className = 'resultado-item';
+                elemento.innerHTML = `
+                    <h3><a href="${item.pagina}">${item.titulo}</a></h3>
+                    <p class="categoria">${item.categoria}</p>
+                `;
+                contenedor.appendChild(elemento);
+            });
+        }
+
+        // Buscar al cargar si hay parámetro en URL
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('q');
+        if (query) {
+            document.getElementById('input-busqueda').value = query;
+            buscar(query);
+        }
+    </script>
+</body>
+</html>
